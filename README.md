@@ -27,3 +27,36 @@ migrant-education-analysis/
 
 ---
 
+## Data Source
+
+| Field | Detail |
+|---|---|
+| **Publisher** | Statistics Canada |
+| **Table** | 98-10-0641-01 |
+| **Title** | Highest level of education by visible minority, selected sociodemographic characteristics and census year |
+| **Release date** | 2024-03-26 |
+| **Census years** | 2006, 2011, 2016, 2021 |
+| **Universe** | Persons in private households — Canada (national level, 25% sample) |
+| **DOI** | https://doi.org/10.25318/9810064101-eng |
+
+**Visible minority groups covered:** South Asian, Chinese, Black, Filipino, Arab, Latin American, Southeast Asian, West Asian, Korean, Japanese, Visible minority n.i.e., Multiple visible minorities, Not a visible minority
+
+---
+
+## Notebook Outline
+
+| Section | Description |
+|---|---|
+| 1. Import Libraries | pandas, numpy, matplotlib, seaborn, scipy |
+| 2. Load & Inspect | Load & concatenate 4 CSV files (2006–2021), preview structure |
+| 3. Clean & Preprocess | Rename columns, filter to national totals, remove aggregates, build pivot table |
+| 4. Education Distribution | Stacked bar chart: education levels across all groups |
+| 5. Bachelor's Degree Ranking | Rank groups by attainment; compute percentage-point gap vs. national average |
+| 6. No Credential Analysis | Identify groups with highest no-credential rates using z-scores |
+| 7. VM vs. Non-VM Comparison | Side-by-side comparison of visible vs. non-visible minority outcomes |
+| 8. Multi-Year Trends | Line chart showing bachelor's+ attainment trends across census years |
+| 9. Statistical Testing | Chi-square test + Pearson correlation heatmap |
+| 10. Interactive Visualization | Shiny app in `src/` folder for interactive exploration |
+
+---
+
