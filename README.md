@@ -60,3 +60,38 @@ migrant-education-analysis/
 
 ---
 
+## Key Findings (2006–2021 with 2021 highlights)
+
+- **Koreans** have the highest bachelor's+ attainment at **50.4%** — 23.7 percentage points above the national average
+- **West Asians (45.2%)** and **South Asians (44.2%)** also significantly outperform the national average
+- **Southeast Asians** have the highest no-credential rate at **25.1%**, more than double the Filipino rate of 8.6%
+- The **total visible minority population (38.4%)** has a substantially higher bachelor's+ rate than the **non-visible minority population (22.6%)**
+- **Black** and **visible minority n.i.e.** groups cluster near or below the national average across both metrics
+
+---
+
+## How to Run
+
+**Requirements:** Python 3.9+
+
+```bash
+# 1. Clone the repo
+git clone git@github.com:Jenniferonyebuchi/migrant-education-analysis.git
+cd migrant-education-analysis
+
+# 2. Install dependencies (choose one):
+
+# Option A: pip
+pip install -r requirements.txt
+
+# Option B: conda
+conda env create -f environment.yml
+conda activate migrant-education
+
+# 3. Open the notebook
+jupyter lab migrant_education_analysis.ipynb
+```
+
+Run all cells top-to-bottom. The notebook loads all 4 CSV files from `data/` and runs the full 2006–2021 analysis including trend charts in Section 8.
+
+---
