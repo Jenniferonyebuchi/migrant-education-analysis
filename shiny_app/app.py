@@ -156,19 +156,19 @@ app_ui = ui.page_navbar(
                 "Groups Selected",
                 ui.output_text("vbox_groups"),
                 showcase=ui.tags.i(class_="fa-solid fa-users"),
-                theme="primary",
+                theme="orange",
             ),
             ui.value_box(
                 "Top Group — Bach. or higher (2021)",
                 ui.output_text("vbox_top"),
                 showcase=ui.tags.i(class_="fa-solid fa-graduation-cap"),
-                theme="success",
+                theme="purple",
             ),
             ui.value_box(
                 "Biggest Gain 2006 \u2192 2021",
                 ui.output_text("vbox_gain"),
                 showcase=ui.tags.i(class_="fa-solid fa-arrow-trend-up"),
-                theme="info",
+                theme="yellow",
             ),
             col_widths=[4, 4, 4],
         ),
@@ -214,6 +214,12 @@ app_ui = ui.page_navbar(
         ui.tags.link(
             rel="stylesheet",
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+        )
+    ),
+    footer=ui.tags.footer(
+        ui.tags.p(
+            "Built by Jennifer Ezinne Onyebuchi",
+            style="text-align:center; padding:12px 0; font-size:0.85rem; color:#6c757d;",
         )
     ),
 )
