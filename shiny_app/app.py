@@ -217,3 +217,68 @@ app_ui = ui.page_navbar(
         )
     ),
 )
+
+#  Server
+
+def server(input, output, session):
+
+    # Shared reactive dataset
+    @reactive.calc
+    def filtered():
+        req(input.sel_groups(), input.sel_years(), input.sel_edu())
+        return df_analysis[
+            df_analysis["visible_minority"].isin(list(input.sel_groups()))
+            & df_analysis["census_year"].isin(list(input.sel_years()))
+            & df_analysis["education_level"].isin(list(input.sel_edu()))
+        ].copy()
+
+    # Value boxes
+    @render.text
+    def vbox_groups():
+        return str(len(input.sel_groups()))
+
+    @render.text
+    def vbox_top():
+        bach_edu = next(
+            (
+                e for e in df_clean["education_level"].unique()
+                if "bachelor" in e.lower() and "higher" in e.lower()
+            ),
+            None,
+        )
+        if not bach_edu:
+            return "N/A"
+        sub = df_analysis[
+            (df_analysis["education_level"] == bach_edu)
+            & (df_analysis["census_year"] == "2021")
+            & (df_analysis["visible_minority"].isin(list(input.sel_groups())))
+        ]
+        if sub.empty:
+            return "N/A"
+        row = sub.loc[sub["pct"].idxmax()]
+        return f"{row['visible_minority']}  ({row['pct']:.1f}%)"
+
+    @render.text
+    def vbox_gain():
+        bach_edu = next(
+            (
+                e for e in df_clean["education_level"].unique()
+                if "bachelor" in e.lower() and "higher" in e.lower()
+            ),
+            None,
+        )
+        if not bach_edu:
+            return "N/A"
+        sub = df_analysis[
+            (df_analysis["education_level"] == bach_edu)
+            & (df_analysis["census_year"].isin(["2006", "2021"]))
+            & (df_analysis["visible_minority"].isin(list(input.sel_groups())))
+        ].pivot_table(index="visible_minority", columns="census_year", values="pct")
+
+        if sub.empty or not {"2006", "2021"}.issubset(sub.columns):
+            return "N/A"
+        sub["gain"] = sub["2021"] - sub["2006"]
+        best = sub["gain"].idxmax()
+        return f"{best}  (+{sub.loc[best, 'gain']:.1f} pp)"
+
+    
