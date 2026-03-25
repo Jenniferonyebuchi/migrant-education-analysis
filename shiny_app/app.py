@@ -118,4 +118,102 @@ GROUP_ISO: dict[str, list[str]] = {
     "Not a visible minority": ["CAN"],
 }
 
+# UI
 
+sidebar = ui.sidebar(
+    ui.h6("Filters", class_="fw-bold mb-2"),
+    ui.input_checkbox_group(
+        "sel_groups",
+        "Visible Minority Groups",
+        choices={g: g for g in ALL_GROUPS},
+        selected=[
+            "South Asian", "Chinese", "Black",
+            "Filipino", "Korean", "Not a visible minority",
+        ],
+    ),
+    ui.hr(),
+    ui.input_checkbox_group(
+        "sel_years",
+        "Census Years",
+        choices={y: y for y in ALL_YEARS},
+        selected=ALL_YEARS,
+    ),
+    ui.hr(),
+    ui.input_checkbox_group(
+        "sel_edu",
+        "Education Levels",
+        choices={k: v for k, v in EDU_SHORT.items() if "higher" not in k.lower()},
+        selected=[k for k in EDU_SHORT if "higher" not in k.lower()],
+    ),
+    width=300,
+)
+
+app_ui = ui.page_navbar(
+    ui.nav_panel(
+        "Overview",
+        ui.layout_columns(
+            ui.value_box(
+                "Groups Selected",
+                ui.output_text("vbox_groups"),
+                showcase=ui.tags.i(class_="fa-solid fa-users"),
+                theme="primary",
+            ),
+            ui.value_box(
+                "Top Group — Bach. or higher (2021)",
+                ui.output_text("vbox_top"),
+                showcase=ui.tags.i(class_="fa-solid fa-graduation-cap"),
+                theme="success",
+            ),
+            ui.value_box(
+                "Biggest Gain 2006 \u2192 2021",
+                ui.output_text("vbox_gain"),
+                showcase=ui.tags.i(class_="fa-solid fa-arrow-trend-up"),
+                theme="info",
+            ),
+            col_widths=[4, 4, 4],
+        ),
+        ui.card(
+            ui.card_header(
+                "Education Level Distribution by Visible Minority Group "
+                "(most recent selected year)"
+            ),
+            output_widget("bar_overview"),
+            full_screen=True,
+        ),
+    ),
+    ui.nav_panel(
+        "Analysis",
+        ui.layout_columns(
+            ui.card(
+                ui.card_header(
+                    "Bachelor\u2019s Degree or Higher \u2014 Trend Across Census Years"
+                ),
+                output_widget("line_trend"),
+                full_screen=True,
+            ),
+            ui.card(
+                ui.card_header(
+                    "World Origin Regions of Selected Groups \u2014 "
+                    "colour = Bach. or higher attainment (2021)"
+                ),
+                output_widget("world_map"),
+                full_screen=True,
+            ),
+            col_widths=[6, 6],
+        ),
+        ui.card(
+            ui.card_header("Filtered Dataset"),
+            ui.output_data_frame("data_table"),
+            full_screen=True,
+        ),
+    ),
+    title="Migrant Education in Canada",
+    sidebar=sidebar,
+    fillable=True,
+    header=ui.tags.head(
+        ui.tags.link(
+            rel="stylesheet",
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+        )
+    ),
+)
