@@ -324,4 +324,46 @@ def server(input, output, session):
         )
         return fig
 
+ # Tab 2: Trend line chart
+    @render_widget
+    def line_trend():
+        bach_edu = next(
+            (
+                e for e in df_clean["education_level"].unique()
+                if "bachelor" in e.lower() and "higher" in e.lower()
+            ),
+            None,
+        )
+        if not bach_edu:
+            return go.Figure()
+
+        df_t = df_clean[
+            df_clean["visible_minority"].isin(list(input.sel_groups()))
+            & (df_clean["education_level"] == bach_edu)
+        ][["census_year", "visible_minority", "pct"]].copy()
+
+        if df_t.empty:
+            return go.Figure()
+
+        fig = px.line(
+            df_t,
+            x="census_year",
+            y="pct",
+            color="visible_minority",
+            markers=True,
+            labels={
+                "census_year": "Census Year",
+                "pct": "% with Bach. or higher",
+                "visible_minority": "Group",
+            },
+            template="plotly_white",
+            color_discrete_sequence=px.colors.qualitative.Bold,
+        )
+        fig.update_layout(
+            legend_title_text="Visible Minority Group",
+            height=480,
+            yaxis_ticksuffix="%",
+        )
+        return fig
+
     
