@@ -425,5 +425,28 @@ def server(input, output, session):
         )
         return fig
 
+# Tab 5: Interactive data table
+    @render.data_frame
+    def data_table():
+        df_f = filtered()
+        display = (
+            df_f[["census_year", "visible_minority", "education_level", "pct"]]
+            .rename(
+                columns={
+                    "census_year": "Census Year",
+                    "visible_minority": "Visible Minority Group",
+                    "education_level": "Education Level",
+                    "pct": "Percentage (%)",
+                }
+            )
+            .sort_values(
+                ["Census Year", "Visible Minority Group", "Education Level"]
+            )
+            .reset_index(drop=True)
+        )
+        return render.DataGrid(display, filters=True, summary=True)
+
+
+app = App(app_ui, server)
     
       
