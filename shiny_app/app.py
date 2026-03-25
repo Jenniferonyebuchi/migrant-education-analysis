@@ -366,4 +366,64 @@ def server(input, output, session):
         )
         return fig
 
+ # World origin-region choropleth map
+    @render_widget
+    def world_map():
+        groups = list(input.sel_groups())
+
+        bach_edu = next(
+            (
+                e for e in df_clean["education_level"].unique()
+                if "bachelor" in e.lower() and "higher" in e.lower()
+            ),
+            None,
+        )
+
+        bach_map: dict[str, float] = {}
+        if bach_edu:
+            sub = df_analysis[
+                (df_analysis["education_level"] == bach_edu)
+                & (df_analysis["census_year"] == "2021")
+                & (df_analysis["visible_minority"].isin(groups))
+            ]
+            bach_map = dict(zip(sub["visible_minority"], sub["pct"]))
+
+        rows = [
+            {"country": iso, "group": grp, "bach_pct": bach_map.get(grp)}
+            for grp in groups
+            for iso in GROUP_ISO.get(grp, [])
+        ]
+
+        if not rows:
+            fig = go.Figure()
+            fig.update_layout(
+                title="No origin regions to display for the current selection."
+            )
+            return fig
+
+        map_df = pd.DataFrame(rows).dropna(subset=["bach_pct"])
+
+        fig = px.choropleth(
+            map_df,
+            locations="country",
+            color="bach_pct",
+            hover_name="group",
+            hover_data={"bach_pct": ":.1f", "country": False},
+            color_continuous_scale="Blues",
+            range_color=[0, 60],
+            labels={"bach_pct": "Bach.+ % (2021)", "group": "Group"},
+            template="plotly_white",
+        )
+        fig.update_layout(
+            geo=dict(
+                showframe=False,
+                showcoastlines=True,
+                projection_type="natural earth",
+            ),
+            coloraxis_colorbar_title="Bach.+ %",
+            height=520,
+        )
+        return fig
+
     
+      
