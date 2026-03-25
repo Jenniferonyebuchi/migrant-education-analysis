@@ -281,4 +281,47 @@ def server(input, output, session):
         best = sub["gain"].idxmax()
         return f"{best}  (+{sub.loc[best, 'gain']:.1f} pp)"
 
+    # Tab 1: Overview grouped bar chart
+    @render_widget
+    def bar_overview():
+        df_f = filtered()
+        if df_f.empty:
+            return go.Figure()
+
+        latest = max(input.sel_years())
+        df_f = df_f[df_f["census_year"] == latest].copy()
+        df_f["edu_short"] = (
+            df_f["education_level"].map(EDU_SHORT).fillna(df_f["education_level"])
+        )
+
+        present_order = [
+            EDU_SHORT[k]
+            for k in EDU_ORDER
+            if EDU_SHORT.get(k) in df_f["edu_short"].values
+        ]
+
+        fig = px.bar(
+            df_f,
+            x="visible_minority",
+            y="pct",
+            color="edu_short",
+            barmode="group",
+            category_orders={"edu_short": present_order},
+            labels={
+                "visible_minority": "Visible Minority Group",
+                "pct": "Percentage (%)",
+                "edu_short": "Education Level",
+            },
+            color_discrete_sequence=px.colors.qualitative.Bold,
+            template="plotly_white",
+        )
+        fig.update_layout(
+            xaxis_tickangle=-35,
+            legend_title_text="Education Level",
+            height=480,
+            margin=dict(b=130),
+            yaxis_ticksuffix="%",
+        )
+        return fig
+
     
